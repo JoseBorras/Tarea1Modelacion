@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sun Mar  4 15:32:38 2018
-
-@author: luiggi
 
 Example 4.3 from Malalasekera Book
 ----------------------------------
@@ -59,9 +56,11 @@ import FiniteVolumeMethod as fvm
 import numpy as np
 import matplotlib.pyplot as plt
 
+#Definición de la solución que representa la solución analítica que se muestra en Malalasekera
 def analyticSol(x):
     return (TA - Tambiente) * np.cosh(n * (longitud - x)) / np.cosh(n * longitud) + Tambiente
 
+#------------------Se establecen los parámetros que definen el problema ---------------------
 longitud = 1.0 # metros
 Tambiente = 20  # °C 
 TA = 100  # °C 
@@ -69,7 +68,9 @@ n2 = 25 # /m^2
 n=5
 fluxB = 0 # Flujo igual a cero
 N = 11 # Número de nodos
-#
+#---------------------------------------------------------------------------------------------
+
+
 # Creamos la malla y obtenemos datos importantes
 #
 malla = fvm.Mesh(nodes = N, length = longitud)

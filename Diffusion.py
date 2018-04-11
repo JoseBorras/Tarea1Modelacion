@@ -1,14 +1,28 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Mar  6 17:07:27 2018
-
-@author: luiggi
-"""
 
 from Coefficients import Coefficients
 
 class Diffusion1D(Coefficients):
+    """
+    Clase que se encarga de calcular los coeficientes difusivos y actualizar los coeficientes generales
+    (aP, aW,aE). Esta clase hereda de la clase Coefficients.
+    
+    Métodos:
+        constructor(nvx,Gamma,dx): inicia los atributos nvx y dx de acuerdo a la clase padre además del
+                                   atributo Gamma
+        destructor(): delete atributes
+        calcCoef(): Calcula los coeficientes difusivos y actualiza los coficientes generales (aP, aW,aE).
+
+        
+    Atributos:
+        aP: Coeficiente central
+        aE: Coeficiente de nodo siguiente
+        aW: Coeficiente de nodo anterior
+        Gamma: Coeficiente Difussivo
+        dx: tamaño del los volumenes
+        
+    """
     
     def __init__(self, nvx = None, Gamma = None, dx = None):
         super().__init__(nvx, dx)
@@ -21,10 +35,12 @@ class Diffusion1D(Coefficients):
         del(self.__dx)
     
     def calcCoef(self):
+        #obtiene los coeficientes usando los geters
         aE = self.aE()
         aW = self.aW()
         aP = self.aP()
         
+        #actualiza los coeficientes (Si gamma no es constante se deben descomentar las siguientes líneas y comentar estas)
         aE += self.__Gamma / self.__dx
         aW += self.__Gamma / self.__dx
         aP += aE + aW

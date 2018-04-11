@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sun Mar  4 15:32:38 2018
-
-@author: luiggi
 
 Example 5.1 from Malalasekera Book
 ----------------------------------
@@ -27,9 +24,11 @@ import FiniteVolumeMethod as fvm
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Se establece la función que representa la solución analítica 
 def analyticSol(x):
     return (np.exp(rho * u * x / Gamma) - 1) / (np.exp(rho * u * L / Gamma) - 1) * (phiL - phi0) + phi0
 
+#-----Se establecen los parámetros que definen el problema (incuyendo el esquema advectivo)--------------
 L = 1.0 # m
 rho = 1.0 # kg/m^3
 u = 2.5 # m/s
@@ -37,8 +36,10 @@ Gamma = 0.1 # kg / m.s
 phi0 = 1 #
 phiL = 0 #
 N = 21 # Número de nodos
-metodo='Quick'
-caso=3
+metodo='Quick' #Otros metodos (esquemas) posibles son DifCentrales, Upwind1 y Upwind2 (revisar clase Aavection para más información)
+caso=3  #Este número sólo es para en la gráfica final se muestre si se trata del caso 1,2 o 3
+#---------------------------------------------------------------------------------------------
+
 
 # Creamos la malla y obtenemos datos importantes
 #
@@ -68,25 +69,36 @@ coef.alloc(nvx)
 #  Calculamos los coeficientes de FVM de la Difusión
 #
 dif = fvm.Diffusion1D(nvx, Gamma = Gamma, dx = delta)
-dif.calcCoef()
+dif.calcCoef() #se obtienen coeficientes Difusivos y se agregan
+
+#---------------------------------------------------------------------------------
+#para matrices grandes no es recomendable imprimir toda la información del siguiente bloque
 #print('aW = {}'.format(dif.aW()), 
 #      'aE = {}'.format(dif.aE()), 
 #      'Su = {}'.format(dif.Su()), 
 #      'aP = {}'.format(dif.aP()), sep='\n')
 #print('.'+'-'*70+'.')
-#
+#--------------------------------------------------------------------------------------------
+
+
 #  Calculamos los coeficientes de FVM de la Advección
 #
 adv = fvm.Advection1D(nvx, rho = rho, dx = delta)
 adv.setU(u)
-adv.calcCoef(metodo) 
+adv.calcCoef(metodo) #se obtienen coeficientes advectivos de acuerdo al esquema seleccionado y se agregan
+
+
+#---------------------------------------------------------------------------------
+#para matrices grandes no es recomendable imprimir toda la información del siguiente bloque
 #print('aW = {}'.format(dif.aW()), 
 #      'aE = {}'.format(dif.aE()), 
 #      'Su = {}'.format(dif.Su()), 
 #      'aP = {}'.format(dif.aP()), sep='\n')
 #print('u = {}'.format(adv.u()))
 #print('.'+'-'*70+'.')
-#
+#--------------------------------------------------------------------------------------------
+
+
 # Se construye el arreglo donde se guardará la solución
 #
 phi = np.zeros(nvx) # El arreglo contiene ceros
@@ -136,12 +148,11 @@ print('||Error|| = ', np.linalg.norm(error))
 print('.'+ '-'*70 + '.')
 #
 # Calculamos la solución exacta en una malla más fina para graficar
-#
 x1 = np.linspace(0,L,100)
 phi_a = analyticSol(x1)
+
 #
-#  Se grafica la solución
-#
+#----------------------Graficación de solución --------------------------------------
 plt.plot(x1,phi_a, '-', label = 'Sol. analítica') 
 plt.plot(x,phi,'--o', label = 'Sol. '+metodo)
 plt.title('Solución de $\partial(p u \phi)/\partial x= \partial (\Gamma \partial\phi/\partial x)/\partial x$ caso %d' %caso)
@@ -151,3 +162,4 @@ plt.grid()
 plt.legend()
 plt.savefig('example04.pdf')
 plt.show()
+#-----------------------------------------------------------------------------------

@@ -1,25 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sun Mar  4 15:32:38 2018
-
-@author: luiggi
-
-Example 5.1 from Malalasekera Book
-----------------------------------
-
-
-___________________________________________________________
-
- |<-------------- 1.0 m ------------->|
-                                     
-            u ---> 
- |------------------------------------|
-                                 
-\phi_0 = 1                       \phi_L = 0
-___________________________________________________________
-
-
+Ejemplo que resuelve la ecuación de Advección-Dufusión no estacionaria y sin fuentes
+La solución se obtiene con el esquema forward para la parte temporal y upwind de primer orden para la advección
 
 """
 
@@ -28,9 +11,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.special import erfc
 
+#Se define la función que representa la solución analítica
 def analyticSol(x,t):
     return 0.5*( erfc( (x-t)/(2*(Gamma*t)**0.5) ) + np.exp(u*x/Gamma)*erfc( (x+t)/(2*(Gamma*t)**0.5) )  )
 
+#-------------Se establecen los parámetros iniciales que definen el problema ---------------------
+#valores iniciales espaciales
 L = 2.5 # m
 rho = 1.0 # kg/m^3
 u = 1. # m/s
@@ -38,12 +24,13 @@ Gamma = 0.1 # kg / m.s
 phi0 = 1 #
 phiL = 0 #
 N = 351 # Número de nodos
-
-t_max=1.0
-dt=0.002
+#valores iniciales del tiempo
+t_max=1.0  #s
+dt=0.002 #s
 n_tiempos=t_max/dt+1
-tiempos=np.arange(0,t_max+dt,dt)
+tiempos=np.arange(0,t_max+dt,dt) #arreglo que contiene los valores de tiempo donde se evalúa la solución
 n_tiempos=len(tiempos)
+#------------------------------------------------------
 
 
 #
@@ -73,27 +60,38 @@ coef.alloc(nvx)
 #fvm.Coefficients.alloc(nvx)
 #
 #  Calculamos los coeficientes de FVM de la Difusión
-#
+
+
 dif = fvm.Diffusion1D(nvx, Gamma = Gamma, dx = delta)
 dif.calcCoef()
+
+#--------------------------------------------------------------------------------
+#Para matrices grandes no conviene imprimir la matriz en esta sección
 #print('aW = {}'.format(dif.aW()), 
 #      'aE = {}'.format(dif.aE()), 
 #      'Su = {}'.format(dif.Su()), 
 #      'aP = {}'.format(dif.aP()), sep='\n')
 #print('.'+'-'*70+'.')
-#
+#----------------------------------------------------------------------------------
+
+
 #  Calculamos los coeficientes de FVM de la Advección
 #
 adv = fvm.Advection1D(nvx, rho = rho, dx = delta)
 adv.setU(u)
 adv.calcCoef('Upwind1') 
+
+#--------------------------------------------------------------------------------
+#Para matrices grandes no conviene imprimir la matriz en esta sección
 #print('aW = {}'.format(dif.aW()), 
 #      'aE = {}'.format(dif.aE()), 
 #      'Su = {}'.format(dif.Su()), 
 #      'aP = {}'.format(dif.aP()), sep='\n')
 #print('u = {}'.format(adv.u()))
 #print('.'+'-'*70+'.')
-#
+#----------------------------------------------------------------------------------
+
+
 # Se construye el arreglo donde se guardará la solución
 #
 phi = np.zeros(nvx)  # El arreglo contiene ceros
@@ -117,7 +115,12 @@ print('.'+'-'*70+'.')
 #
 Su = coef.Su()  # Vector del lado derecho
 
-###--------------Definimos los indices-------------
+
+###----------------------------------------------------------------------------
+#                Comienza el método foreward
+# ------------------------------------------------------------------------------
+
+#--------------Extraemos los coeficientes para su manipulación -------------
 aP=dif.aP()
 aE=dif.aE()
 aW=dif.aW()
@@ -126,9 +129,9 @@ aWW=dif.aWW()
 Su=dif.Su()
 aE[-2]=0
 aW[1]=0
-#------------------------------------------------
-#  INICIA FOR 
-#--------------------------------------------
+
+
+#-------------------Ciclo iterativo que modela el método foreward-----------------------
 k=1
 x1 = np.linspace(0,L,350)
 x = malla.createMesh()
@@ -141,10 +144,9 @@ for i in range(1,n_tiempos):
     for l in range(1,len(phi)-1):
         nphi[l]= (dt/(rho*delta)) * ((-aP[l]+rho*delta/dt)*phi[l]+aE[l]*phi[l+1]+aW[l]*phi[l-1]+ Su[l]   )
     phi = nphi
-
+    #-------------Graficación (de sólo 4 pasos temporales) ----------------------------
     if i == int(k*(n_tiempos-1)/4):
-        
-        #print("entro")        
+              
         plt.plot(x1,phi_a, '-', label = 'Sol. analítica %.2f' %t) 
         plt.plot(x,phi,'--o', label = 'Sol. numérica')
         plt.title('Solución de $\partial(p u \phi)/\partial x= \partial (\Gamma \partial\phi/\partial x)/\partial x$ con dt=%1.2e' %dt)

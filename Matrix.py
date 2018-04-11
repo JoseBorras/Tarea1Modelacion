@@ -1,13 +1,25 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Mar  6 18:15:28 2018
 
-@author: luiggi
-"""
 import numpy as np
 
 class Matrix():
+    """
+    Clase que construye (a partir de los coeficientes) la matriz que representa el sistema de ecuaciones de 
+    la ecuación discreta del método de volumen finito. Para más información de los coeficientes revisar las
+    clases Advection, Coefficients y Difusion.
+    
+    Métodos:
+        constructor(nvx): set matriz A y tamaño N de la matriz
+        destructor(): delete atributes N y matriz A
+        mat(): get matriz A
+        build(coefficients): construye la matriz A(pentadiagonal)
+       
+    Atributos:
+        A: matriz que representa el sistema de ecuaciones a resolver.
+        N: tamaño de la matriz
+
+    """
     
     def __init__(self, nvx = None):
         self.__N = nvx - 2 

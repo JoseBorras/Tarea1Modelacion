@@ -1,16 +1,35 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Mar  4 13:21:50 2018
-
-@author: luiggi
-"""
 
 import numpy as np
 
 class Mesh():
+    """
+    Clase que se encarga de definir la malla a partir de los datos geométrios de la misma como
+    el número de nodos o la longitud.
     
-    def __init__(self, nodes = None, 
+    Métodos:
+        constructor(nodes,volumes,lenght): set inicial atributes
+        destructor(): delete atributes
+        adjustNodesVolumes(nodes,volumnes): Si se tiene el número de nodos calcula el número de volumenes y si
+        se tiene el número de volumenes calcula el número de nodos.
+        nodes(): get nodos
+        setNodes(nodes): set nodes
+        Volumes(): get volumes
+        SetVolumes(volumes): set volumes 
+        lenght(): get lenght
+        calcDelta(): calcula la distancia de cada uno de los volumenes de la malla "delta X"
+        delta(): get delta
+        createMesh(): Construye la maya que contien los puntos donde se obtendrá la solución (incluyendo frontera)
+        
+    Atributos:
+        nodes: número de nodos (puntos) de la malla incluyendo las fronteras
+        volumes: número de volumenes de la mallla
+        length: longitud del segmento de recta correspondiente al dominio    
+        delta: longitud de cada volumen 
+    """
+    
+    def __init__(self, nodes = None,  
                      volumes = None,
                      length = None):
         self.__nodes = nodes
@@ -26,8 +45,8 @@ class Mesh():
         del(self.__length)
         del(self.__delta)
         
-    def adjustNodesVolumes(self,nodes,volumes):
-        if nodes:
+    def adjustNodesVolumes(self,nodes,volumes): #Método que calcula los volúmenes si se tienen los
+        if nodes:                               #nodos o los nodos si se tienen los volumenes
             self.__volumes = self.__nodes + 1
         if volumes:
             self.__nodes = self.__volumes - 1        

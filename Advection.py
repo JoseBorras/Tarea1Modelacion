@@ -1,15 +1,36 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Mar  7 18:46:43 2018
 
-@author: luiggi
-"""
 
 import numpy as np
 from Coefficients import Coefficients
 
 class Advection1D(Coefficients):
+    """
+    Clase que se encarga de calcular los coeficientes advectivos y actualizar los coeficientes generales
+    (aP, aW,aE). Esta clase hereda de la clase Coefficients.
+    
+    Métodos:
+        constructor(nvx,Gamma,dx): inicia los atributos nvx y dx de acuerdo a la clase padre además del
+                                   atributo Gamma
+        destructor(): delete atributes
+        calcCoef(metodo): Calcula los coeficientes difusivos de acuerdo al esquema indicado por la 
+                          variable 'metodo' y actualiza los coficientes generales (aP, aW,aE). Los esquemas
+                          posibles son: 'DifCentrales','Upwind1','Upwind2','Quick'
+        setU(u): set velocidad u
+        u: get velocidad u
+  
+    Atributos:
+        aP: Coeficiente central
+        aE: Coeficiente de nodo siguiente
+        aW: Coeficiente de nodo anterior
+        aEE: Coeficiente del segundo nodo siguiente
+        aWW: Coeficiente de segundo nodo anterior
+        Gamma: Coeficiente Difussivo
+        dx: tamaño del los volumenes
+        u: velocidad
+        
+    """
     
     def __init__(self, nvx = None, rho = None, dx = None):
         super().__init__(nvx)

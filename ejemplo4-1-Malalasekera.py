@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sun Mar  4 15:32:38 2018
-
-@author: luiggi
-
 Example 4.1 from Malalasekera Book
 ----------------------------------
 Consider the problem of source-free heat conduction in an insulated rod
@@ -38,21 +34,22 @@ import FiniteVolumeMethod as fvm
 import numpy as np
 import matplotlib.pyplot as plt
 
+#-------------Definición de datos iniciales ----------------
 longitud = 0.5 # meters
 TA = 100 # °C 
 TB = 500 # °C 
 k  = 1000 # W/m.K
-N  = 6 # Número de nodos
-#
-# Creamos la malla y obtenemos datos importantes
-#
+N  = 6 # Número de puntos (5 volumenes tienen 6 puntos)
+#-------------------------------------------------------------
+
+# ------------Creamos la malla de acuerdo a la geometría definida por el problema
 malla = fvm.Mesh(nodes = N, length = longitud)
 nx    = malla.nodes()     # Número de nodos
 nvx   = malla.volumes()   # Número de volúmenes
 delta = malla.delta()     # Tamaño de los volúmenes
-#
-# Imprimimos los datos del problema (nicely)
-#
+#--------------------------------------------------------
+
+# Imprimimos los datos que definen el problema (nicely)
 fvm.printData(Longitud = longitud,
               Temperatura_A = TA,
               Temperatura_B = TB,
@@ -65,15 +62,15 @@ fvm.printData(Longitud = longitud,
 #
 df1 = fvm.Diffusion1D(nvx, Gamma = k, dx = delta)
 df1.alloc(nvx) # Se aloja memoria para los coeficientes
-df1.calcCoef() # Se calculan los coeficientes
+df1.calcCoef() # Se calculan los coeficientes difusivos
 #
 # Se construye el arreglo donde se guardará la solución
 #
-T = np.zeros(nvx) # El arreglo contiene ceros
+T = np.zeros(nvx) # Se define arreglo el arreglo que contendrá la solución
 T[0]  = TA        # Condición de frontera izquierda
 T[-1] = TB        # Condición de frontera derecha
-df1.bcDirichlet('LEFT_WALL', T[0])   # Se actualizan los coeficientes
-df1.bcDirichlet('RIGHT_WALL', T[-1]) # de acuerdo a las cond. de frontera
+df1.bcDirichlet('LEFT_WALL', T[0])   # Se actualizan los coeficientes frontera izquierda (Dirichlet)
+df1.bcDirichlet('RIGHT_WALL', T[-1]) # se actualizan los coeficientes de la fronteera derecha (Dirichlet)
 print('aW = {}'.format(df1.aW()), 
       'aE = {}'.format(df1.aE()), 
       'Su = {}'.format(df1.Su()), 
@@ -106,6 +103,8 @@ Ta = 800 * x + 100
 #  Se grafica la solución
 #
 x *= 100 # Transformación a [cm]
+
+#---------------Código de Graficcación------------------------------
 plt.plot(x,Ta, '-', label = 'Sol. analítica') # Sol. analítica
 plt.plot(x,T,'o', label = 'Sol. FVM')
 plt.title('Solución de $k (\partial^2 T/\partial x^2) = 0$ con FVM')

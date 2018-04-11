@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Mar  6 15:11:05 2018
-
-@author: luiggi
-"""
 
 import numpy as np
 
@@ -13,7 +8,44 @@ class Coefficients():
     Esta clase define los arreglos principales para los coeficientes del
     metodo de Volumen Finito. Los arreglos son definidos como variables de
     clase para que sean compartidos por todos los objetos de esta clase.
+    
+        Métodos:
+        constructor(nvx,delta): inicia los atributos nvx y delta
+        destructor(): delete atributes
+        alloc(n): asigna arreglos con ceros a los atributos de coeficientes (aP, aE, etc.) con
+                  el objetivo de reservar memoria
+        setVolumes(nvx): set atributo nvx
+        setDelta(delta): set atributo delta
+        aP():get aP
+        aW(): get aW
+        aWW(): get aWW
+        aE(): get aE
+        aEE(): get aEE
+        sU(): get sU                
+        bcDirichlet(wall,phi): ajusta los coeficientes de la frontera 'wall' (puede ser 'LEFT_WALL' o 'RIGHT_WALL')
+                               de acuerdo a la condición de frontera con valor 'phi'
+        bcNeumman(wall,flux): ajusta los coeficientes de la frontera 'wall' (puede ser 'LEFT_WALL' o 'RIGHT_WALL')
+                               de acuerdo a la condición de frontera con flujo de valor 'flux'
+        setsU(q): set atributo Su
+        setSp(Sp): set atributo Sp
+
+        
+    Atributos:
+        aP: Coeficiente central
+        aE: Coeficiente de nodo siguiente
+        aW: Coeficiente de nodo anterior
+        aEE: Coeficiente del segundo nodo siguiente
+        aWW: Coeficiente de segundo nodo anterior
+        Gamma: Coeficiente Difussivo
+        delta: tamaño del los volumenes
+        u: velocidad
+        sU: coeficientes que representan los términos independientes del sistema de ecuaciones a
+               resolver y que son consecuencia de las fuentes
+        sP: Corrección en los coeficientes aP debido a fuentes.
+        
     """    
+    
+    #atributos
     __aP = None
     __aE = None
     __aW = None

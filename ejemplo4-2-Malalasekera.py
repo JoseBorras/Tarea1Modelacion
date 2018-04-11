@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sun Mar  4 15:32:38 2018
-
-@author: luiggi
-
 Example 4.2 from Malalasekera Book
 ----------------------------------
 Now we discuss a problem that includes sources other than those arising
@@ -42,16 +38,19 @@ import FiniteVolumeMethod as fvm
 import numpy as np
 import matplotlib.pyplot as plt
 
+#definición de la función que representa la solución analítica que se muestra en Malalasekera
 def analyticSol(x):
     return ((TB - TA) / longitud + q * (longitud - x) / (2 * k) ) * x + TA
     
+#---------Se establecen los parámetros iniciales que definen el problema------
 longitud = 0.02 # meters
 TA = 100  # °C 
 TB = 200  # °C 
 k  = 0.5  # W/m.K
 q  = 1e+06 # 1e+06 W/m^3 = 1000 kW/m^3 Fuente uniforme
 N  = 6 # Número de nodos
-#
+#-----------------------------------------------------------------------------
+
 # Creamos la malla y obtenemos datos importantes
 #
 malla = fvm.Mesh(nodes = N, length = longitud)
@@ -115,11 +114,11 @@ print('.'+ '-'*70 + '.')
 #
 x1 = np.linspace(0,longitud,100)
 Ta = analyticSol(x1)
-#
-#  Se grafica la solución
-#
+
 x *= 100 # Transformación a [cm]
 x1 *= 100
+
+#---------------Graficación de la solución---------------------------------
 plt.plot(x1,Ta, '-', label = 'Sol. analítica') 
 plt.plot(x,T,'o', label = 'Sol. FVM')
 plt.title('Solución de $k (\partial^2 T/\partial x^2)+q = 0$ con FVM')
@@ -130,3 +129,4 @@ plt.grid()
 plt.legend()
 plt.savefig('example02.pdf')
 plt.show()
+#-----------------------------------------------------------------------

@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sun Mar  4 13:21:50 2018
+Módulo que importa todas las funciones, clases, etcétera, necesarios en el método de volumen finito.
 
-@author: luiggi
 """
 import numpy as np
 from pandas import DataFrame
